@@ -2,40 +2,81 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Calculadora de presupuestos</title>
+  <title>Calculadora de impresión</title>
 </head>
 <body>
-  <h2>Calculadora de presupuesto</h2>
+  <h2>Calculadora de presupuesto de impresión</h2>
   <label>Cantidad de unidades:</label>
   <input type="number" id="cantidad" placeholder="Ej: 1000"><br><br>
 
-  <label>Tipo de impresión:</label>
-  <select id="caras">
-    <option value="1">1 cara (0,05 €/ud)</option>
-    <option value="2">2 caras (0,08 €/ud)</option>
+  <label>Tamaño:</label>
+  <select id="tamano"></select>
+  <label>o personaliza:</label>
+  <input type="number" id="personalizado" placeholder="Unidades por pliego"><br><br>
+
+  <label>Papel:</label>
+  <select id="papel"></select><br><br>
+
+  <label>Impresión cara 1:</label>
+  <select id="cara1">
+    <option value="bn">Blanco y negro</option>
+    <option value="color">Color</option>
+  </select><br><br>
+
+  <label>Impresión cara 2:</label>
+  <select id="cara2">
+    <option value="none">Sin impresión</option>
+    <option value="bn">Blanco y negro</option>
+    <option value="color">Color</option>
   </select><br><br>
 
   <button onclick="calcular()">Calcular</button>
-
   <h3>Resultado:</h3>
   <p id="resultado"></p>
 
   <script>
+    let costes;
+    fetch('costes.json')
+      .then(response => response.json())
+      .then(data => {
+        costes = data;
+        const tamanoSel = document.getElementById("tamano");
+        for (const t in data.tamaños) {
+          let opt = document.createElement("option");
+          opt.value = data.tamaños[t];
+          opt.text = `${t} (${data.tamaños[t]} por pliego)`;
+          tamanoSel.appendChild(opt);
+        }
+        const papelSel = document.getElementById("papel");
+        for (const p in data.papeles) {
+          let opt = document.createElement("option");
+          opt.value = data.papeles[p];
+          opt.text = `${p} (${data.papeles[p]} €/pliego)`;
+          papelSel.appendChild(opt);
+        }
+      });
+
     function calcular() {
       const cantidad = parseInt(document.getElementById("cantidad").value);
-      const caras = parseInt(document.getElementById("caras").value);
+      const personalizado = parseInt(document.getElementById("personalizado").value);
+      const unidadesPorPliego = personalizado > 0 ? personalizado : parseInt(document.getElementById("tamano").value);
+      const precioPapel = parseFloat(document.getElementById("papel").value);
+      const cara1 = document.getElementById("cara1").value;
+      const cara2 = document.getElementById("cara2").value;
 
-      if (isNaN(cantidad) || cantidad <= 0) {
-        document.getElementById("resultado").innerText = "Introduce una cantidad válida.";
+      if (isNaN(cantidad) || isNaN(unidadesPorPliego)) {
+        document.getElementById("resultado").innerText = "Introduce valores válidos.";
         return;
       }
 
-      const precioUnitario = (caras === 1) ? 0.05 : 0.08;
-      const precioSinIVA = cantidad * precioUnitario;
-      const precioConIVA = precioSinIVA * 1.21;
+      const nPliegos = Math.ceil(cantidad / unidadesPorPliego);
+      const precioCara1 = costes.impresion_por_cara[cara1] || 0;
+      const precioCara2 = cara2 === "none" ? 0 : costes.impresion_por_cara[cara2] || 0;
+      const total = nPliegos * (precioPapel + precioCara1 + precioCara2);
 
-      document.getElementById("resultado").innerText = 
-        `Precio sin IVA: ${precioSinIVA.toFixed(2)} €\nPrecio con IVA: ${precioConIVA.toFixed(2)} €`;
+      document.getElementById("resultado").innerText =
+        `Total de pliegos: ${nPliegos}
+Coste total: ${total.toFixed(2)} €`;
     }
   </script>
 </body>

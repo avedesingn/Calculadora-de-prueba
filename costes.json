@@ -1,0 +1,22 @@
+{
+  "tama\u00f1os": {
+    "A6": 8,
+    "A5": 4,
+    "A4": 2,
+    "A3": 1
+  },
+  "papeles": {
+    "A-3 NAVIGATOR OFITECA": 0.023,
+    "Bolsas para plastificar 86x54 125 micras [leitz)": 0.026,
+    "espirales de diametro de 6 mm": 0.08,
+    "SOBRES TAMA\u00d1O 26X36 CM (OJO NO BOLSA)": 0.129,
+    "CELO PEQUE\u00d1O APLI REF: 11103": 0.59,
+    "A-4 NAVIGATOR 80 G": 0.009,
+    "Papel DNS Premium - Blanco - 32 x 45 cm - 100 grs": 0.039,
+    "Poliester 375 grs 300 \u00b5 SYNAPS XM (COMPRA DE 50 PLIEGOS)": 1.693
+  },
+  "impresion_por_cara": {
+    "bn": 0.008,
+    "color": 0.04
+  }
+}
