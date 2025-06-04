@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Calculadora de presupuestos</title>
+</head>
+<body>
+  <h2>Calculadora de presupuesto</h2>
+  <label>Cantidad de unidades:</label>
+  <input type="number" id="cantidad" placeholder="Ej: 1000"><br><br>
+
+  <label>Tipo de impresión:</label>
+  <select id="caras">
+    <option value="1">1 cara (0,05 €/ud)</option>
+    <option value="2">2 caras (0,08 €/ud)</option>
+  </select><br><br>
+
+  <button onclick="calcular()">Calcular</button>
+
+  <h3>Resultado:</h3>
+  <p id="resultado"></p>
+
+  <script>
+    function calcular() {
+      const cantidad = parseInt(document.getElementById("cantidad").value);
+      const caras = parseInt(document.getElementById("caras").value);
+
+      if (isNaN(cantidad) || cantidad <= 0) {
+        document.getElementById("resultado").innerText = "Introduce una cantidad válida.";
+        return;
+      }
+
+      const precioUnitario = (caras === 1) ? 0.05 : 0.08;
+      const precioSinIVA = cantidad * precioUnitario;
+      const precioConIVA = precioSinIVA * 1.21;
+
+      document.getElementById("resultado").innerText = 
+        `Precio sin IVA: ${precioSinIVA.toFixed(2)} €\nPrecio con IVA: ${precioConIVA.toFixed(2)} €`;
+    }
+  </script>
+</body>
+</html>
